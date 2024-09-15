@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -7,8 +7,29 @@ import Header from './components/Header'
 import SearchBar from './components/SearchBar'
 import JobCard from './components/JobCard'
 import jobData from './JobDummyData';
+import axios from "axios";
+
+
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const [count, setCount] = useState(0);
+  const [jobs,setJob] = useState([]);
+
+    const fetchJobs = async() =>{
+    try{
+      console.log("Hi from fetchJobs");
+      const response = await axios.get("http://localhost:8080/jobPosts");
+      console.log(response);
+      setPost[response.data];
+    }
+    catch(exc){
+      console.log(exc);
+    }
+  }
+  
+  // useEffect(()=>{
+  //   fetchJobs()
+  // },[]);
 
   return (
     <>
