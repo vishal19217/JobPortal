@@ -8,6 +8,7 @@ import SearchBar from './components/SearchBar'
 import JobCard from './components/JobCard'
 import jobData from './JobDummyData';
 import axios from "axios";
+import JobForm from './components/JobForm'
 
 
 function App() {
@@ -35,13 +36,15 @@ function App() {
     <>
     <div className='h-full w-full border-red-300 border-x-4' >
       <Navbar/>
+      <JobForm/>
+      {/* <JobForm/>
       <Header/>
       <SearchBar/>
       {
         jobData.map((job)=> (
           <JobCard key={job.id} {...job}/>
         ))
-      }
+      } */}
     </div>
     </>
   )
