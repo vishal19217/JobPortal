@@ -9,7 +9,9 @@ import JobCard from './components/JobCard'
 import jobData from './JobDummyData';
 import axios from "axios";
 import JobForm from './components/JobForm'
-
+import {Route,Routes} from 'react-router-dom'
+import LoginPage from './components/LoginPage'
+import SignUp from './components/SignUp'
 
 function App() {
   
@@ -34,17 +36,32 @@ function App() {
 
   return (
     <>
-    <div className='h-full w-full border-red-300 border-x-4' >
+    <div className='layout border-red-300 border-x-4'>
       <Navbar/>
-      <JobForm/>
-      {/* <JobForm/>
-      <Header/>
-      <SearchBar/>
-      {
-        jobData.map((job)=> (
-          <JobCard key={job.id} {...job}/>
-        ))
-      } */}
+      {/* {/* <JobForm/> */}
+      <Routes>
+        {/* element is prop which accepts jsx so we have to wrap the argument in {} to interpret it as a javascript*/}
+        <Route path='/add' element  = {<JobForm/>}/>
+        <Route path='/login' element  = {<LoginPage/>}/>
+        <Route path='/Register' element  = {<SignUp/>}/>
+      <Route path='/dashboard' element = {
+        <>
+        <Header/>
+        <SearchBar/>
+        {
+          jobData.map((job)=> (
+            <JobCard key={job.id} {...job}/>
+          ))
+        }
+        </>
+      }/>
+      <Route path='*' element={<>
+        <div>
+          Page not found
+        </div>
+        </>}/>
+      
+      </Routes>
     </div>
     </>
   )
