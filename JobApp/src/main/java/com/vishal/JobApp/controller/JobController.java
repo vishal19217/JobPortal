@@ -27,9 +27,16 @@ public class JobController {
         System.out.println("PostId query received from the client: "+postId);
         return service.getJob(postId);
     }
+    @GetMapping("load")
+    public String load(){
+        service.load();
+        return "success";
+    }
     //Create New Job
     @PostMapping("jobPost")
     public ResponseBody addJob(@RequestBody JobPost jobPost){
+        System.out.println("Inside jobPost");
+        System.out.println(jobPost.toString());
         service.addJob(jobPost);
         return new ResponseBody("200");
     }

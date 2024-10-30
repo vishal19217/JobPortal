@@ -23,7 +23,7 @@ function Navbar() {
             }/>
             <Route path='/' element={
               <>
-              <Link to = '/login'>          
+              <Link to = 'login'>          
               <button className='rounded-md px-3 py-4 mx-3'>Login</button>
               </Link>
               <Link to= '/register'>

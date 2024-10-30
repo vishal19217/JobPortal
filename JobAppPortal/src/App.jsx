@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useContext, useEffect, useState } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Header from './components/Header'
@@ -9,59 +7,65 @@ import JobCard from './components/JobCard'
 import jobData from './JobDummyData';
 import axios from "axios";
 import JobForm from './components/JobForm'
-import {Route,Routes} from 'react-router-dom'
+import {Link, Navigate, Route,Routes, useNavigate} from 'react-router-dom'
 import LoginPage from './components/LoginPage'
 import SignUp from './components/SignUp'
-
+import AxiosContext from './controller/AxiosProvider'
+import PrivateRoute from './components/PrivateRoute'
 function App() {
   
   const [count, setCount] = useState(0);
   const [jobs,setJob] = useState([]);
+  const {isAuthenticated,updateAuthentication} = useContext(AxiosContext);
 
-    const fetchJobs = async() =>{
+  const fetchJobs = async() =>{
     try{
       console.log("Hi from fetchJobs");
       const response = await axios.get("http://localhost:8080/jobPosts");
       console.log(response);
-      setPost[response.data];
+      setPost(response.data);
     }
     catch(exc){
       console.log(exc);
     }
   }
-  
+  const acculumateJobCards = ()=>
+  {
+      return jobData.map((job)=> (
+        <JobCard key={job.id} {...job}/>
+      ));
+  }
   // useEffect(()=>{
   //   fetchJobs()
   // },[]);
-
+  console.log("Inside the App.jsx funcation")
+  if (isAuthenticated === undefined) {console.log("Ruk ja thoda !!! Sas lene dee");return (<div>Loading...</div>);} // or any loading indicator
   return (
     <>
     <div className='layout border-red-300 border-x-4'>
-      <Navbar/>
-      {/* {/* <JobForm/> */}
-      <Routes>
-        {/* element is prop which accepts jsx so we have to wrap the argument in {} to interpret it as a javascript*/}
-        <Route path='/add' element  = {<JobForm/>}/>
-        <Route path='/login' element  = {<LoginPage/>}/>
-        <Route path='/Register' element  = {<SignUp/>}/>
-      <Route path='/dashboard' element = {
-        <>
-        <Header/>
-        <SearchBar/>
-        {
-          jobData.map((job)=> (
-            <JobCard key={job.id} {...job}/>
-          ))
-        }
-        </>
-      }/>
-      <Route path='*' element={<>
-        <div>
-          Page not found
-        </div>
-        </>}/>
+      {<Navbar/>}
+      {console.log("IsAutenticated: "+isAuthenticated)}
+
+      <Routes>  
+        <Route element = {<PrivateRoute/>}>
+          <Route path="/add" element = {<div><JobForm/></div>}/>
+          <Route path="/" element = {<Navigate to = {"/dashboard"}/>}/>
+          <Route path="/dashboard" element = {
+            <div>
+            <Header/>
+            <SearchBar/>  
+            {
+              acculumateJobCards()
+            }
+            </div>}
+          />
+        </Route>
+        <Route path="/login" element= {<LoginPage parent="routed to /login"/>}/>
+        <Route path="/register" element = { !isAuthenticated ? <SignUp/> :(<Navigate To="/dashboard"/>)}/>
+        <Route path='*' element={<div>Page not found</div>}/> 
       
       </Routes>
+      
     </div>
     </>
   )
