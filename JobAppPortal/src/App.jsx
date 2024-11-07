@@ -1,71 +1,91 @@
 import { useContext, useEffect, useState } from 'react'
 import './App.css'
+import { createBrowserRouter,RouterProvider } from 'react-router-dom';
 import Navbar from './components/Navbar'
-import Header from './components/Header'
-import SearchBar from './components/SearchBar'
-import JobCard from './components/JobCard'
-import jobData from './JobDummyData';
-import axios from "axios";
-import JobForm from './components/JobForm'
-import {Link, Navigate, Route,Routes, useNavigate} from 'react-router-dom'
-import LoginPage from './components/LoginPage'
-import SignUp from './components/SignUp'
-import AxiosContext from './controller/AxiosProvider'
-import PrivateRoute from './components/PrivateRoute'
+import {axiosContext}  from './controller/AxiosProvider';
+import PrivateRoute from './components/PrivateRoute';
+import Dashboard from './components/Dashboard';
+import LoginPage from './components/LoginPage';
+import SignUp from './components/SignUp';
+import JobForm from './components/JobForm';
+
+// Define public routes accessible to all users
+const routesForPublic = [
+  {
+    path: "/service",
+    element: <div>Service Page</div>,
+  },
+  {
+    path: "*",
+    element: <div>Page not found</div>,
+  },
+];
+
+// Define routes accessible only to authenticated users
+const routesForAuthenticatedOnly = [
+  {
+    path: "/",
+    element: <PrivateRoute/>, // Wrap the component in ProtectedRoute
+    children: [
+      {
+        path: "/",
+        element: <Dashboard/>,
+      },
+      {
+        path: "/add",
+        element: <JobForm/>,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard/>,
+      },
+      {
+        path: "/logout",
+        element: <div>Logout</div>,
+      },
+    ],
+  },
+];
+
+// Define routes accessible only to non-authenticated users
+const routesForNotAuthenticatedOnly = [
+  
+  {
+    path: "/login",
+    element: <LoginPage parent="routed to login"/>,
+  },
+  {
+      path: "/register",
+      element: <SignUp/>,
+  }
+];
+
+
+// Combine and conditionally include routes based on authentication status
+const router = createBrowserRouter(
+  [{
+  element: <Navbar/>,
+  children : [
+  ...routesForPublic,
+  ...routesForNotAuthenticatedOnly,
+  ...routesForAuthenticatedOnly,
+  ],
+  }
+]);
+
+
 function App() {
   
-  const [count, setCount] = useState(0);
-  const [jobs,setJob] = useState([]);
-  const {isAuthenticated,updateAuthentication} = useContext(AxiosContext);
-
-  const fetchJobs = async() =>{
-    try{
-      console.log("Hi from fetchJobs");
-      const response = await axios.get("http://localhost:8080/jobPosts");
-      console.log(response);
-      setPost(response.data);
-    }
-    catch(exc){
-      console.log(exc);
-    }
-  }
-  const acculumateJobCards = ()=>
-  {
-      return jobData.map((job)=> (
-        <JobCard key={job.id} {...job}/>
-      ));
-  }
-  // useEffect(()=>{
-  //   fetchJobs()
-  // },[]);
-  console.log("Inside the App.jsx funcation")
-  if (isAuthenticated === undefined) {console.log("Ruk ja thoda !!! Sas lene dee");return (<div>Loading...</div>);} // or any loading indicator
+  
+const { checkForValidToken,token} = axiosContext();
+  useEffect(()=>{
+  },[token]);
+  console.log("Inside the app.jsx token:" ,token );
   return (
     <>
     <div className='layout border-red-300 border-x-4'>
-      {<Navbar/>}
-      {console.log("IsAutenticated: "+isAuthenticated)}
-
-      <Routes>  
-        <Route element = {<PrivateRoute/>}>
-          <Route path="/add" element = {<div><JobForm/></div>}/>
-          <Route path="/" element = {<Navigate to = {"/dashboard"}/>}/>
-          <Route path="/dashboard" element = {
-            <div>
-            <Header/>
-            <SearchBar/>  
-            {
-              acculumateJobCards()
-            }
-            </div>}
-          />
-        </Route>
-        <Route path="/login" element= {<LoginPage parent="routed to /login"/>}/>
-        <Route path="/register" element = { !isAuthenticated ? <SignUp/> :(<Navigate To="/dashboard"/>)}/>
-        <Route path='*' element={<div>Page not found</div>}/> 
-      
-      </Routes>
-      
+      <RouterProvider router={router}>
+      </RouterProvider>
     </div>
     </>
   )
@@ -76,5 +96,10 @@ function App() {
 1. Create a login page 
 2. Create a form to fill the jobs
 3. Host it on the webpage
+4. REgistering is done
+5. Now show the filter options,value and submit filter
+6. Show the logout user,add,update job done
+7. How to use httponly cookies so that user 
+4. Have proper notifications (successfully added/removed etc)
 */
 export default App

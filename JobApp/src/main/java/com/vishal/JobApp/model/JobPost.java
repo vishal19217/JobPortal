@@ -1,5 +1,6 @@
 package com.vishal.JobApp.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,12 +11,14 @@ import java.util.List;
 
 //using lombok we don't have to write getter setter explicitly.
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class JobPost {
+@Entity
+@Table(name="JobPost")
+    public class JobPost {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int postId;
     private Date postedOn;
     private String jobRole;

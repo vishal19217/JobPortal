@@ -1,4 +1,4 @@
-package com.vishal.JobApp;
+package com.vishal.JobApp.controller;
 
 import com.vishal.JobApp.model.JobPost;
 import com.vishal.JobApp.model.ResponseBody;
@@ -7,55 +7,76 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
 public class JobController {
     @Autowired
     public JobService service;
 
     //Read
-    @GetMapping("jobPosts")
+    @GetMapping("v1/api/jobPosts")
+    //Get all Jobs
     public List<JobPost> getAllJobs()
     {
         List<JobPost> jobs = service.getAllJobs();
         return jobs;
     }
-    @GetMapping("jobPost/{postId}")
+    //Get a job based on a job Post id
+    @GetMapping("v1/api/jobPost/{postId}")
     public JobPost getJob(@PathVariable("postId") int postId){
         System.out.println("PostId query received from the client: "+postId);
         return service.getJob(postId);
     }
-    @GetMapping("load")
+    //Initial db load with dummy data just to occupy the ui
+    @GetMapping("v1/api/load")
     public String load(){
         service.load();
         return "success";
     }
     //Create New Job
-    @PostMapping("jobPost")
+    @PostMapping("v1/api/jobPost")
     public ResponseBody addJob(@RequestBody JobPost jobPost){
-        System.out.println("Inside jobPost");
-        System.out.println(jobPost.toString());
+        System.out.println("Job to be added in db: "+jobPost.toString());
         service.addJob(jobPost);
         return new ResponseBody("200");
     }
 
     //Update Job
-    @PutMapping("jobPost")
+    @PutMapping("v1/api/jobPost")
     public ResponseBody updateJob(@RequestBody JobPost jobPost){
+        System.out.println("Job to be updated in the db: "+jobPost.toString());
         service.updateJob(jobPost);
         return new ResponseBody("200");
     }
     //Delete Job
-    @DeleteMapping("jobPost{postId}")
+    @DeleteMapping("v1/api/jobPost{postId}")
     public ResponseBody deleteJob(@PathVariable("postId")int postId){
         service.deleteJob(postId);
         return new ResponseBody("200");
     }
-    @PostMapping("handleForm")
-    public String handleForm(JobPost jobPost){
-        service.addJob(jobPost);
-        return "success";
+//    @GetMapping("v1/api/jobPost/experience")
+//    public List<String> getDistinctExperience(){
+//        return service.getDistinctExperience();
+//    }
+//    @GetMapping("v1/api/jobPost/location")
+//    public List<String> getDistinctLocation(){
+//        return service.getDistinctLocation();
+//    }
+//    @GetMapping("v1/api/jobPost/jobRole")
+//    public List<String> getDistinctJobRole(){
+//        return service.getDistinctJobRole();
+//    }
+    @GetMapping("v1/api/jobPost/distinct/{filter}")
+    public List<String> getDistinct(@PathVariable("filter") String filter){
+        System.out.println("Filter value :"+filter);
+        return new ArrayList<String>();
+//        return service.getDistinctFilterValue(filter);
     }
+//    @GetMapping("v1/api/jobPost/search")
+//    public List<JobPost> search(@RequestParam("JobType") String jobType){
+//        return service.findByJobType();
+//    }
+
 }

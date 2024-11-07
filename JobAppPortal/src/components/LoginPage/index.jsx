@@ -1,46 +1,42 @@
 import React, { useContext } from "react";
 import "./index.css";
-import AxiosContext from "../../controller/AxiosProvider";
+import {axiosContext} from "../../controller/AxiosProvider";
 import { useState } from "react";
+import { Link ,useNavigate} from "react-router-dom";
 import axios from "axios";
-import { Buffer } from "buffer";
-import { Link ,Navigate,useNavigate} from "react-router-dom";
 function LoginPage(props) {
 
   console.log("Parent: " + props.parent);
 
 
-  const { axiosInstance,setAuthenticatedInstance, updateAuthentication } =
-    useContext(AxiosContext);
+  const {updateToken,baseURL} = axiosContext();
 
   const [formData, setFormData] = useState({ username: "", password: "" });
-  let navigate  = useNavigate();
-
+  const navigate = useNavigate();
+  
   const handleFormData = (event) => {
     const { name, value } = event.target;
 
     setFormData((formData) => {
       return { ...formData, [name]: value };
     });
-    console.log(formData);
   };
-
   const handleSubmit = async (event) => {
     try {
+
       event.preventDefault();
       console.log("Inside handleSubmit");
-
-      const response = await axiosInstance.post(
-        "/login",{
+      
+      const response = await axios.post(
+        baseURL + "/login",{
             username: formData["username"],
             password: formData["password"],
           }
       );
       console.log(response.data);
       if (response.status === 200) {
-        console.log(formData);
-        setAuthenticatedInstance(formData['username'],formData['password']);
-        navigate("/dashboard");
+        updateToken(response.data);
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
