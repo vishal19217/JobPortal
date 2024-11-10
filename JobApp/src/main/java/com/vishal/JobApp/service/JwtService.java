@@ -19,15 +19,17 @@ import java.util.Map;
 import java.util.function.Function;
 @Service
 public class JwtService {
-    private static final String SECRET = "xyz";
-    private String secretKey = "abcdef";
-    public JwtService(){
-        try {
-            this.secretKey = generateSecretKey();
+//    private static final String SECRET = "xyz";
+    private final String SECRET = "abcdefsdfghjkljhgfdswertyujhnjkuioiytrewasdfghjklmnbvcxasdfghjkouytrewwert3456789hgfdcvbnmoiuytrew";  // Hardcoded secret key for testing
 
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    private String secretKey = "abcdefsdfghjkljhgfdswertyujhnjkuioiytrewasdfghjklmnbvcxasdfghjkouytrewwert3456789hgfdcvbnmoiuytrew";
+    public JwtService(){
+//        try {
+            this.secretKey = SECRET;
+
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
     public String generateSecretKey() throws NoSuchAlgorithmException {

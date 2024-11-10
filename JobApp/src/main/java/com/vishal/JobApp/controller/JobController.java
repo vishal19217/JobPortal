@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class JobController {
@@ -68,11 +69,21 @@ public class JobController {
 //    public List<String> getDistinctJobRole(){
 //        return service.getDistinctJobRole();
 //    }
-    @GetMapping("v1/api/jobPost/distinct/{filter}")
-    public List<String> getDistinct(@PathVariable("filter") String filter){
+    @GetMapping("v1/api/jobPost/distinct/field")
+    public List<String> getDistinct(@RequestParam("filter") String filter){
         System.out.println("Filter value :"+filter);
-        return new ArrayList<String>();
+        return service.getDistinctValueForFilter(filter);
 //        return service.getDistinctFilterValue(filter);
+    }
+
+    @GetMapping("v1/api/jobPost/search")
+    public List<JobPost> filteredJobs(
+            @RequestParam("jobRole") Optional<String> jobRole,
+            @RequestParam("location") Optional<String> location,
+            @RequestParam("jobType") Optional<String> jobType,
+            @RequestParam("experience") Optional<String> experience){
+            List<JobPost> jobs = service.getFilteredJobs(jobRole.orElse(""),location.orElse(""),jobType.orElse(""),experience.orElse(""));
+        return jobs;
     }
 //    @GetMapping("v1/api/jobPost/search")
 //    public List<JobPost> search(@RequestParam("JobType") String jobType){

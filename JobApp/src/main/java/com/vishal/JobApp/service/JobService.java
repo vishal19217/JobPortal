@@ -2,9 +2,7 @@ package com.vishal.JobApp.service;
 
 import com.vishal.JobApp.model.JobPost;
 import com.vishal.JobApp.repo.JobRepo;
-import com.vishal.JobApp.repo.JobSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,6 +34,36 @@ public class JobService {
         for (JobPost jobPost: jobs) {
             jobRepo.save(jobPost);
         }
+    }
+    public List<JobPost> getFilteredJobs(String jobRole, String location, String jobType, String experience) {
+        // Set default values if null (use empty strings for strings to match any value)
+        String jobRoleFilter = (jobRole != null) ? jobRole : "";
+        String locationFilter = (location != null) ? location : "";
+        String jobTypeFilter = (jobType != null) ? jobType : "";
+        String experienceFilter = (experience != null) ? experience : "";
+        System.out.println("jobRoleType: "+" "+jobRoleFilter);
+        return jobRepo.getFilteredJobs(jobRoleFilter,jobTypeFilter,locationFilter,experienceFilter);
+//        return jobRepo.filteredSearch(
+//                jobRoleFilter, jobTypeFilter, locationFilter, experienceFilter);
+    }
+
+    public List<String> getDistinctValueForFilter(String filter) {
+        filter = filter.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
+        System.out.println("inside job service distinctValue for fileter: "+filter);
+        if(filter.equals( "job_role")){
+            return jobRepo.getDistinctJobRole();
+        }
+        else if(filter.equals( "job_type")){
+            System.out.println("Babua");
+            return jobRepo.getDistinctJobType();
+        }
+        else if(filter.equals("experience")){
+            return jobRepo.getDistinctExperience();
+        }
+        else if(filter.equals( "location")){
+            return jobRepo.getDistinctLocations();
+        }
+        return new ArrayList<>();
     }
 
 
