@@ -3,12 +3,13 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { axiosContext } from '../../controller/AxiosProvider'; // Ensure the path is correct
-
+// import jwt_decode from 'jwt-decode';
 function Navbar() {
     // Accessing the context
     const { checkForValidToken,baseURL,token,deleteToken} = axiosContext();
     
     const [isAuthenticated,setIsAuthenticated] = useState(false);
+    const[role,setRole] = useState("user");
     const logout = async()=>{
         try{
             var response = await axios.post(baseURL+"/logout",{},{
@@ -25,11 +26,19 @@ function Navbar() {
         }
         
     }
+    const decodeJWTToken = ()=>{
+        const arrayToken = token.split('.');
+        const tokenPayload = JSON.parse(atob(arrayToken[1]))
+        console.log(tokenPayload.role);
+        return tokenPayload.role;
+    };
     useEffect(()=>{
         console.log("Inside useeffect of Navbar");
         setIsAuthenticated(checkForValidToken);
-    },[isAuthenticated,token]);
+        setRole(decodeJWTToken());
+    },[isAuthenticated,token,role]);
     console.log("NAvbar KE ANDAR HU MEI");
+   
     return (
       <>
         <div className='bg-purple-950'>
@@ -43,12 +52,16 @@ function Navbar() {
                             <Link to='/'>
                                 <button className='rounded-md px-3 py-4 mx-3'>Home</button>
                             </Link>
-                            <Link to='/add'>
-                                <button className='rounded-md px-3 py-4 mx-3'>Add Job</button>
-                            </Link>
-                            <Link to='/update'>
-                                <button className='rounded-md px-3 py-4'>Update Job</button>
-                            </Link>
+                            {role === "admin" &&
+                            (  <>
+                               <Link to='/add'>
+                                    <button className='rounded-md px-3 py-4 mx-3'>Add Job</button>
+                                </Link>
+                                <Link to='/update'>
+                                    <button className='rounded-md px-3 py-4'>Update Job</button>
+                                </Link>
+                                </>
+                            )}
                             <button className='rounded-md px-3 py-4' onClick={logout}>
                                 Logout
                             </button>
