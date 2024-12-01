@@ -42,7 +42,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
                 .permitAll()
                 .anyRequest()
                 .authenticated());
-        http.httpBasic(Customizer.withDefaults());
+        http.logout(httpSecurityLogoutConfigurer ->
+                httpSecurityLogoutConfigurer.logoutUrl("logout"));
+
+//        http.httpBasic(Customizer.withDefaults());
         // make it stateless
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

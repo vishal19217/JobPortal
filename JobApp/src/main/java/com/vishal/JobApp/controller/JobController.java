@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class JobController {
@@ -83,7 +81,8 @@ public class JobController {
             @RequestParam("jobType") Optional<String> jobType,
             @RequestParam("experience") Optional<String> experience){
             List<JobPost> jobs = service.getFilteredJobs(jobRole.orElse(""),location.orElse(""),jobType.orElse(""),experience.orElse(""));
-        return jobs;
+
+            return jobs;
     }
 //    @GetMapping("v1/api/jobPost/search")
 //    public List<JobPost> search(@RequestParam("JobType") String jobType){

@@ -4,8 +4,11 @@ import com.vishal.JobApp.model.LoginUser;
 import com.vishal.JobApp.model.ResponseBody;
 import com.vishal.JobApp.model.User;
 import com.vishal.JobApp.repo.UserRepo;
+import com.vishal.JobApp.service.BlackListService;
 import com.vishal.JobApp.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +22,8 @@ public class UserController {
     AuthenticationManager authenticationManager;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    BlackListService blackListService;
     @PostMapping("login")
     public String login(@RequestBody LoginUser loginUser){
 
@@ -29,6 +34,17 @@ public class UserController {
             return jwtService.generateToken(loginUser.getUsername());
         }
         else return "Login failed";
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader ("Authorization") String token){
+
+        if(token.startsWith("Bearer")){
+            token = token.substring(7);
+        }
+        System.out.println("Token to be blacklisted. :"+token);
+        blackListService.blacklistToken(token);
+
+        return ResponseEntity.ok("Successfully Logout");
     }
     @GetMapping("/hello")
     public String res(){

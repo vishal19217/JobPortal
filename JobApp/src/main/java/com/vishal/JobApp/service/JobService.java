@@ -54,7 +54,6 @@ public class JobService {
             return jobRepo.getDistinctJobRole();
         }
         else if(filter.equals( "job_type")){
-            System.out.println("Babua");
             return jobRepo.getDistinctJobType();
         }
         else if(filter.equals("experience")){

@@ -1,5 +1,6 @@
 package com.vishal.JobApp.config;
 
+import com.vishal.JobApp.service.BlackListService;
 import com.vishal.JobApp.service.JwtService;
 import com.vishal.JobApp.service.MyUserService;
 import jakarta.servlet.FilterChain;
@@ -25,6 +26,8 @@ public class JwtFilter extends OncePerRequestFilter {
     JwtService jwtService;
     @Autowired
     ApplicationContext context;
+    @Autowired
+    BlackListService blackListService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
@@ -33,6 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
         if(authHeader!=null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
             username = jwtService.extractUsername(token);
+        }
+
+        if (blackListService.isTokenBlacklisted(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
         // Will work when user is not authenticated (not in login api)
         if(username !=null && SecurityContextHolder.getContext().getAuthentication() == null){
