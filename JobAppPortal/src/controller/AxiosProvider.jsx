@@ -43,6 +43,10 @@ const AxiosProvider = (props) => {
     });
     const [baseURL,setBaseUrl] = useState("http://localhost:8080");
 
+    const deleteToken = ()=>{
+        localStorage.removeItem('token');
+        setToken(null);
+    };
     const checkForValidToken= ()=>{
         if(token!= null && isTokenValid(token)){
             return true;
@@ -65,7 +69,7 @@ const AxiosProvider = (props) => {
 
        // Memoize the value so it doesn't change on every render
     const value = useMemo(() => ({
-     checkForValidToken,token,baseURL,setToken,updateToken}), [token,baseURL]);
+     checkForValidToken,token,baseURL,setToken,updateToken,deleteToken}), [token,baseURL]);
 
     
     return (

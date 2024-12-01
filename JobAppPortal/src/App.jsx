@@ -93,13 +93,9 @@ const { checkForValidToken,token} = axiosContext();
 
 
 /*
-1. Create a login page 
 2. Create a form to fill the jobs
 3. Host it on the webpage
-4. REgistering is done
-5. Now show the filter options,value and submit filter
-6. Show the logout user,add,update job done
-7. How to use httponly cookies so that user 
-4. Have proper notifications (successfully added/removed etc)
+4. Now the update job, form fill jobs few optimizations etc are left
+7. How to use httponly cookies so that user   
 */
 export default App

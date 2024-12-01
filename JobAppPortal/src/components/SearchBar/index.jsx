@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function SearchBar(props) {
   const { token, baseURL } = axiosContext();
-
+  const { setListedJobs } = props;
   // States for filter options
   const [filter, setFilter] = useState({ role: '', type: '', location: '', experience: '' });
   const [jobRoles, setJobRoles] = useState([]);
@@ -19,7 +19,6 @@ function SearchBar(props) {
       ...prevFilter,
       [name]: value,
     }));
-    console.log(filter);
   };
 
   // Function to fetch distinct filter values
@@ -31,7 +30,6 @@ function SearchBar(props) {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
 
       // Update state based on filter
       if (filter === 'jobRole') {
@@ -48,6 +46,24 @@ function SearchBar(props) {
     }
   };
 
+  const renderFilteredBasedJobs = async(event)=>{
+    console.log(filter);
+    const baseUrl = `${baseURL}/v1/api/jobPost/search`;
+    let url = baseUrl;
+    const queryParams = [];
+    for(let key in filter){
+      if(filter[key]){
+        queryParams.push(`${key}=${encodeURIComponent(filter[key])}`);
+      }
+    }
+    url = url + '?' + queryParams.join('&');
+    console.log(url);
+    const response = await axios.get(url,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }});
+    setListedJobs(response.data);
+  };
   // Fetching distinct values when the component mounts or the filter name changes
   useEffect(() => {
     fetchFilterValues('jobRole');
@@ -56,10 +72,12 @@ function SearchBar(props) {
     fetchFilterValues('experience');
   }, [token, baseURL]);
 
+
+
   return (
     <div className="flex gap-4 mt-9 justify-center px-10">
       <select
-        name="role"
+        name="jobRole"
         defaultValue="Job Role"
         className="w-64 py-3 pl-4 bg-zinc-200 font-semibold rounded-md"
         onChange={handleChange}
@@ -75,7 +93,7 @@ function SearchBar(props) {
       </select>
 
       <select
-        name="type"
+        name="jobType"
         defaultValue="JobType"
         className="w-64 py-3 pl-4 bg-zinc-200 font-semibold rounded-md"
         onChange={handleChange}
@@ -122,7 +140,7 @@ function SearchBar(props) {
         ))}
       </select>
 
-      <button className="w-64 bg-blue-500 text-white py-3 font-semibold rounded-md">Submit</button>
+      <button className="w-64 bg-blue-500 text-white py-3 font-semibold rounded-md" onClick={renderFilteredBasedJobs}>Submit</button>
     </div>
   );
 }

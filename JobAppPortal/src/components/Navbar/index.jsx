@@ -1,15 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { axiosContext } from '../../controller/AxiosProvider'; // Ensure the path is correct
 
 function Navbar() {
     // Accessing the context
-    const { checkForValidToken } = axiosContext();
-    var isAuthenticated = checkForValidToken();
-    // useEffect(()=>{
-    //     console.log("token value from navbar: ",token);
-    // },token);
+    const { checkForValidToken,baseURL,token,deleteToken} = axiosContext();
+    
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
+    const logout = async()=>{
+        try{
+            var response = await axios.post(baseURL+"/logout",{},{
+                headers: {
+                    'Authorization' : `Bearer ${token}`, 
+                }
+            });
+            console.log("Logged out successfully");
+            deleteToken();
+            setIsAuthenticated(false);
+        }
+        catch(e){
+            console.error("Error in logging out: ",e);
+        }
+        
+    }
+    useEffect(()=>{
+        console.log("Inside useeffect of Navbar");
+        setIsAuthenticated(checkForValidToken);
+    },[isAuthenticated,token]);
     console.log("NAvbar KE ANDAR HU MEI");
     return (
       <>
@@ -30,6 +49,9 @@ function Navbar() {
                             <Link to='/update'>
                                 <button className='rounded-md px-3 py-4'>Update Job</button>
                             </Link>
+                            <button className='rounded-md px-3 py-4' onClick={logout}>
+                                Logout
+                            </button>
                         </>
                     ) : (
                         // Render links for unauthenticated users

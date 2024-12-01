@@ -32,11 +32,13 @@ function Dashboard(){
         console.log("Inside useffect of dashbaoard:   ",token);
         accumulateJobCards();
     }, [token]); // Empty dependency array means it runs only once
+    // If we miss the dependency array parameter then it will run on every renders
+    // Else the useEffect will only runs when component is mounted first.
 
     return (
         <div>
         <Header/>
-        <SearchBar/>  
+        <SearchBar setListedJobs = {updateListedJobs}/>  
         {
             listedJobs?.length > 0  && listedJobs.map((job) => (
                 <JobCard 
