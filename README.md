@@ -17,3 +17,12 @@ A Job Application Portal with secure JWT-based authentication and role-based aut
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+## UI Pictures
+### Login and SignUp Page
+![image](https://github.com/user-attachments/assets/5378093b-a22e-4c61-a38c-b5991aeb78ff)
+### Dashboard and Dashboard with Filter Applied
+![dashboard](https://github.com/user-attachments/assets/ec12703b-cb11-4d0e-8a61-22347d2fc545)
+### Job Form to add Jobs on the portal 
+![jobForm](https://github.com/user-attachments/assets/c056f116-f74a-4dcc-bba1-311d60316844)
+
