@@ -27,10 +27,14 @@ function Navbar() {
         
     }
     const decodeJWTToken = ()=>{
-        const arrayToken = token.split('.');
-        const tokenPayload = JSON.parse(atob(arrayToken[1]))
-        console.log(tokenPayload.role);
-        return tokenPayload.role;
+        if(token!=null){
+            const arrayToken = token.split('.');
+            const tokenPayload = JSON.parse(atob(arrayToken[1]))
+            console.log(tokenPayload.role);
+            return tokenPayload.role;
+        }
+        return null;
+        
     };
     useEffect(()=>{
         console.log("Inside useeffect of Navbar");
