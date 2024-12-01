@@ -38,13 +38,13 @@ public class JwtService {
         System.out.println("Secret Key: "+secretKey.toString());
         return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }
-    public String generateToken(String username) {
+    public String generateToken(String username,String role) {
         Map<String,Object> claims = new HashMap<>();
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
-                .claim("role","user")
+                .claim("role",role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*1440))
                 .signWith(getKey(),SignatureAlgorithm.HS256)
@@ -58,7 +58,9 @@ public class JwtService {
         // extract the username from jwt token
         return extractClaim(token, Claims::getSubject);
     }
-
+    public Date extractExpiration(String token){
+        return extractClaim(token,Claims::getExpiration);
+    }
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
@@ -80,8 +82,5 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
 
 }

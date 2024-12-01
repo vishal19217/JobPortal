@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,7 +32,11 @@ public class UserController {
 
         // Generate a token which will be given to the client
         if(authentication.isAuthenticated()){
-            return jwtService.generateToken(loginUser.getUsername());
+            System.out.println("Inside isAuthenticated.. during login process...");
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String role = userDetails.getAuthorities().toArray()[0].toString(); // Assuming you are using Spring Security's GrantedAuthority for roles
+
+            return jwtService.generateToken(loginUser.getUsername(),role);
         }
         else return "Login failed";
     }
